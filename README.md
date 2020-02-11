@@ -28,3 +28,47 @@ Below are my notes collected from the community-maintained [*The Hitchhiker’s 
 	- `$ pip freeze > requirements.txt`
 - Install packages
 	- `$ pip install -r requirements.txt`
+
+
+## Structuring Projects
+
+### Creating a `tests` directory
+Recommended approach for `import`ing a module/library in a project repository's test file(s): "Use a simple (but _explicit_) path modification to resolve the package properly."
+
+1. Create `tests/context.py`:
+```python
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import module_name_here
+```
+
+2. Inside a given test file, use `from .context import module_name_here
+
+### Code Smells 👃
+- Circular dependencies
+- Hidden coupling
+- Heavy use of global state/context
+- Spaghetti code
+- **Ravioli code**: "hundreds of similar little pieces of logic, often classes or objects, without proper structure"
+
+### Modules
+- Module names should be short and descriptive and should avoid use of special characters.
+- Don't use periods (.), underscores, (_) or hyphens (-). ( - is the subtraction operator.)
+#### Imports
+- Explicit
+`from module import func`
+- General
+`import module`
+- Bad
+`from modu import *`
+
+### Packages
+- If a directory has `__init__.py`, it's considered a Python package.
+	- E.g., a directory `/case` with `wonkabar.py` => `import case.wonkabar`
+		- Look for `__init__.py` in `case`, execute all of its top-level statements
+		- Look for `case/wonkabar.py`, execute all of its top-level statements
+		- Any variable, function, or class defined in `wonkabar.py` is given by the case.wonkabar namespace
+- Ideally `__init__.py` should be empty.
+- Aliasing for nested package: `import deeply.nested.module as mod`
